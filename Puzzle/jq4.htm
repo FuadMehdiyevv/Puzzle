@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Puzzle Game</title>
+    </head>
+    <body>
+        <div id="puzzle"></div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script>
+            $(() => {
+                const puzzle = $("#puzzle");
+                puzzle
+                    .css({
+                        position: 'relative',
+                        width: '800px',
+                        height: '600px',
+                        border: '1px solid #666'
+                    })
+                $("body").css({margin: 0})
+                for (let i = 0; i < 6; i++) {
+                    for (let j = 0; j < 8; j++) {
+                        let id = 'p' + i + j;
+                        puzzle.append(`<div id="${id}"></div>`)
+                        $(`#${id}`).css({
+                            position: 'absolute', 
+                            width: '100px', 
+                            height: '100px', 
+                            boxShadow: '0 0 3px #333',
+                            background: `url('../img/puzzle.jpg') ${-100 * j}px ${-100 * i}px`,
+                            top:  `${rand(0, 600 )}px`, 
+                            left: `${rand(800, $("body").width() - 130)}px`,
+                            transform: `rotate(${rand(-30,30)}deg)`
+                        })     
+                    }
+                }
+                $("#puzzle>div").draggable({
+                    snap: true,
+                    start: function() {
+                        $(this).css({transform: `rotate(0deg)`})
+                    },
+                    stop: function() {
+                        $(this).css({
+                            top: Math.round( parseInt( $(this).css('top') ) / 100) * 100 + "px",
+                            left: Math.round( parseInt( $(this).css('left') ) / 100) * 100 + "px"
+                        })
+                        yoxla()
+                    } 
+                })
+
+                function yoxla() {
+                    let count = 0
+                    for (let i = 0; i < 6; i++) {
+                        for (let j = 0; j < 8; j++) {
+                            let id = 'p' + i + j;
+                            if ($(`#${id}`).css('top') === 100 * i &&
+                                $(`#${id}`).css('left') === 100 * j) count++
+                            else return
+                        }
+                    }
+                    if(count === 48) console.log("CONGRATS !!!")
+                }
+
+                function rand(min, max) {
+                    return Math.floor(Math.random() * (max - min + 1) ) + min;
+                }
+            })
+        </script>
+    </body>
+</html>
